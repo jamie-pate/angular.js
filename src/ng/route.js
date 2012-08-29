@@ -420,7 +420,15 @@ function $RouteProvider(){
         if (!match && (params = matcher($location.path(), path))) {
           match = inherit(route, {
             params: extend({}, $location.search(), params),
-            pathParams: params});
+            pathParams: params
+          });
+          if ((route.templateUrl) && (/:/.test(route.templateUrl))) {
+            match.templateUrl = interpolate(route.templateUrl,params);
+          }
+          //remove cached template if params were substituted (rely on browser cache)
+          if (match.templateUrl != route.templateUrl) {
+            match.template = undefined;
+          }
           match.$route = route;
         }
       });

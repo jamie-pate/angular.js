@@ -318,6 +318,33 @@ describe('$route', function() {
       });
     });
 
+    it('should interpolate parameters into the url of fetched templates',function(){
+      module(function($routeProvider) {
+        $routeProvider.
+          when('/foo/:rparam',{templateUrl:':rparam.html'});
+      });
+
+      inject(function($route, $httpBackend, $location, $rootScope) {
+        var log = '';
+        $rootScope.$on('$routeChangeStart', function(e, next) { log += '$before(' + next.templateUrl + ');'});
+        $rootScope.$on('$routeChangeSuccess', function(e, next) { log += '$after(' + next.templateUrl + ');'});
+
+        $httpBackend.expectGET('r1.html').respond('R1');
+        $httpBackend.expectGET('r2.html').respond('R2');
+
+        $location.path('/foo/r1');
+        $rootScope.$digest();
+        expect(log).toBe('$before(r1.html);');
+
+        $location.path('/foo/r2');
+        $rootScope.$digest();
+        expect(log).toBe('$before(r1.html);$before(r2.html);');
+
+        $httpBackend.flush();
+        expect(log).toBe('$before(r1.html);$before(r2.html);$after(r2.html);');
+        expect(log).not.toContain('$after(r1.html);');
+      });
+    });
 
     it('should not update $routeParams until $routeChangeSuccess', function() {
       module(function($routeProvider) {
