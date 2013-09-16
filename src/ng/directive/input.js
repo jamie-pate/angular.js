@@ -541,8 +541,8 @@ function numberInputType(scope, element, attr, ctrl, $sniffer, $browser) {
   });
 
   if (attr.min) {
-    var min = parseFloat(attr.min);
     var minValidator = function(value) {
+      var min = parseFloat(attr.min);
       if (!isEmpty(value) && value < min) {
         ctrl.$setValidity('min', false);
         return undefined;
@@ -557,8 +557,8 @@ function numberInputType(scope, element, attr, ctrl, $sniffer, $browser) {
   }
 
   if (attr.max) {
-    var max = parseFloat(attr.max);
     var maxValidator = function(value) {
+      var max = parseFloat(attr.max);
       if (!isEmpty(value) && value > max) {
         ctrl.$setValidity('max', false);
         return undefined;
